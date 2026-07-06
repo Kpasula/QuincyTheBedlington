@@ -1,0 +1,16 @@
+# Build output
+dist
+.astro
+
+# Dependencies
+node_modules
+
+# Generated search index
+public/pagefind
+
+# Lockfiles (managed by the package manager)
+package-lock.json
+
+# Content collections are authored by hand; leave prose formatting alone
+src/content/**/*.md
+src/content/**/*.mdx
