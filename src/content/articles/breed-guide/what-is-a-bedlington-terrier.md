@@ -17,7 +17,7 @@ This is the starting page. From here you can go deeper into
 <div class="quincy-note">
   <span class="quincy-note__label">Quincy's real record</span>
   <p style="margin:0.4rem 0 0">
-    Quincy is a male Bedlington with a gray/silver, curly, wool-like coat. Depending
+    Quincy is a male Bedlington with a blue, curly, wool-like coat. Depending
     on the light he can look like a lamb or a mop. He's friendly with people, a little
     shy at first, and — an honest detail — he doesn't love being photographed; when you
     sit down to take a picture he tends to run straight at you. One rule from his record:
