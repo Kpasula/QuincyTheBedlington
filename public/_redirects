@@ -7,3 +7,12 @@ https://www.quincythebedlington.com/* https://quincythebedlington.com/:splat 301
 
 # Force HTTPS on the apex (Cloudflare usually also handles this via Always Use HTTPS).
 http://quincythebedlington.com/* https://quincythebedlington.com/:splat 301
+
+# HIDE the free *.pages.dev URLs: bounce anyone who hits them to the real domain.
+# Cloudflare always assigns a *.pages.dev host to every project and it can't be
+# deleted, so we 301 it away instead. Each line only fires on its own host, so
+# this single file is safe to deploy to BOTH the prod and dev projects.
+# Production project -> apex.
+https://quincythebedlington.pages.dev/* https://quincythebedlington.com/:splat 301
+# Dev/staging project -> dev subdomain.
+https://quincythebedlington-dev.pages.dev/* https://dev.quincythebedlington.com/:splat 301
