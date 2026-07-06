@@ -25,10 +25,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
 
-      # The npm 10.9.7 bundled in the Node 22.22.2 runner toolcache is broken
-      # (its @npmcli/arborist is missing the 'promise-retry' module), which makes
-      # `npm ci` crash. Corepack fetches a clean npm 11 independent of it.
+      # The npm bundled in the runner's Node toolcache has been unreliable
+      # (a missing internal module crashes `npm ci`). Corepack provisions a
+      # clean, pinned npm from the public registry.
       - name: Activate clean npm via Corepack
         run: |
           corepack enable
@@ -36,13 +37,7 @@ jobs:
           npm -v
 
       - name: Install dependencies
-        run: npm ci --loglevel verbose
-
-      - name: Dump npm debug log on failure
-        if: failure()
-        run: |
-          echo "=== newest npm debug log ==="
-          ls -t ~/.npm/_logs/*.log 2>/dev/null | head -1 | xargs -r tail -n 60
+        run: npm ci
 
       - name: Build site
         run: npm run build
