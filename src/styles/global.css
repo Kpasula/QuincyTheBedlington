@@ -1,7 +1,17 @@
 /* ------------------------------------------------------------------ *
  * Design tokens
+ *
+ * Theming works three ways:
+ *   1. No choice made  -> follow the system (prefers-color-scheme).
+ *   2. data-theme="light" on <html> -> force light.
+ *   3. data-theme="dark"  on <html> -> force dark.
+ * The toggle button writes the choice to localStorage; an inline script
+ * in the <head> sets data-theme before paint so there is no flash.
  * ------------------------------------------------------------------ */
-:root {
+
+/* Light values (the default). */
+:root,
+:root[data-theme='light'] {
   /* Silver/blue-grey palette drawn from a Bedlington's coat. */
   --color-bg: #fbfbfd;
   --color-surface: #ffffff;
@@ -26,8 +36,24 @@
   --space: 1rem;
 }
 
+/* Shared dark values, applied both by system pref and by manual choice. */
+:root[data-theme='dark'] {
+  --color-bg: #14181d;
+  --color-surface: #1b2127;
+  --color-ink: #eef1f4;
+  --color-ink-soft: #aeb7c0;
+  --color-line: #2c343c;
+  --color-accent: #8fb2d4;
+  --color-accent-dark: #b9d1e8;
+  --color-silver: #4a545f;
+  --color-silver-soft: #232a31;
+  --color-warn-bg: #2c2717;
+  --color-warn-line: #6b5a2a;
+}
+
+/* Follow the system only when the visitor has not picked a theme. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --color-bg: #14181d;
     --color-surface: #1b2127;
     --color-ink: #eef1f4;
@@ -314,4 +340,204 @@ img { max-width: 100%; height: auto; }
   --pagefind-ui-border: var(--color-line);
   --pagefind-ui-border-radius: var(--radius);
   --pagefind-ui-font: var(--font-sans);
+}
+
+/* ------------------------------------------------------------------ *
+ * Theme toggle button (sun / moon)
+ * ------------------------------------------------------------------ */
+.theme-toggle {
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  background: none;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-ink);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--color-accent); transform: rotate(-12deg); }
+/* Show the moon in light mode (tap for dark), the sun in dark mode. */
+.theme-toggle__moon { display: inline; }
+.theme-toggle__sun { display: none; }
+:root[data-theme='dark'] .theme-toggle__moon { display: none; }
+:root[data-theme='dark'] .theme-toggle__sun { display: inline; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-toggle__moon { display: none; }
+  :root:not([data-theme='light']) .theme-toggle__sun { display: inline; }
+}
+
+/* ------------------------------------------------------------------ *
+ * Hero, remixed: photo + copy side by side
+ * ------------------------------------------------------------------ */
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: center;
+}
+.hero__photo {
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  border: 1px solid var(--color-line);
+  background:
+    radial-gradient(120% 120% at 30% 20%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent),
+    var(--color-silver-soft);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--color-ink-soft);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.hero__photo img { width: 100%; height: 100%; object-fit: cover; }
+.photo-placeholder {
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  padding: 1rem;
+}
+.photo-placeholder__paw { font-size: 2.4rem; }
+.photo-placeholder__hint { font-size: 0.8rem; max-width: 22ch; }
+.hero__title .wave { display: inline-block; }
+
+@media (max-width: 820px) {
+  .hero__grid { grid-template-columns: 1fr; }
+  .hero__photo { max-width: 22rem; margin-inline: auto; order: -1; }
+}
+
+/* ------------------------------------------------------------------ *
+ * Stats strip
+ * ------------------------------------------------------------------ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.stat {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+}
+.stat__num { font-size: 1.7rem; font-weight: 800; color: var(--color-accent-dark); line-height: 1; }
+.stat__label { font-size: 0.82rem; color: var(--color-ink-soft); margin-top: 0.35rem; }
+
+/* ------------------------------------------------------------------ *
+ * Photo gallery (placeholder tiles the owner swaps later)
+ * ------------------------------------------------------------------ */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.gallery__tile {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  border: 1px dashed var(--color-line);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 10%, transparent), var(--color-silver-soft));
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.gallery__tile:hover { transform: scale(1.03); border-color: var(--color-accent); }
+
+/* ------------------------------------------------------------------ *
+ * Tap-the-Quincy game
+ * ------------------------------------------------------------------ */
+.game {
+  margin-top: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.game__scorebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.game__stat { font-size: 0.95rem; color: var(--color-ink-soft); }
+.game__stat b { color: var(--color-ink); font-size: 1.1rem; }
+.game__board {
+  position: relative;
+  height: 320px;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(80% 80% at 50% 0%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent),
+    var(--color-silver-soft);
+  overflow: hidden;
+  touch-action: manipulation;
+}
+.game__target {
+  position: absolute;
+  font-size: 2.6rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease;
+  user-select: none;
+}
+.game__target:active { transform: translate(-50%, -50%) scale(0.85); }
+.game__hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--color-ink-soft);
+  padding: 1rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * Share / tell-a-friend
+ * ------------------------------------------------------------------ */
+.share {
+  margin-top: 2rem;
+  text-align: center;
+  background:
+    radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent),
+    var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 2rem 1.25rem;
+}
+.share__buttons { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-top: 1.25rem; }
+
+/* ------------------------------------------------------------------ *
+ * Footer: Instagram row
+ * ------------------------------------------------------------------ */
+.site-footer__social {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  text-decoration: none;
+  color: var(--color-ink-soft);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.site-footer__social:hover { color: var(--color-accent-dark); }
+.site-footer__social svg { width: 1.3rem; height: 1.3rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }

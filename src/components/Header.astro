@@ -28,6 +28,11 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     </nav>
 
     <a class="site-header__search-link" href="/search" aria-label="Search the knowledge base">Search</a>
+
+    <button class="theme-toggle" type="button" aria-label="Switch between light and dark mode" title="Light / dark mode">
+      <span class="theme-toggle__moon" aria-hidden="true">🌙</span>
+      <span class="theme-toggle__sun" aria-hidden="true">☀️</span>
+    </button>
   </div>
 </header>
 
@@ -38,5 +43,23 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     const open = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!open));
     nav?.classList.toggle('site-nav--open', !open);
+  });
+
+  // Light / dark toggle. Figures out what is showing right now (saved choice,
+  // or the system preference), flips it, and remembers the pick.
+  const themeBtn = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  themeBtn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    let current = root.getAttribute('data-theme');
+    if (!current) {
+      current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('qtb-theme', next);
+    } catch (e) {
+      // Storage blocked; the choice just will not persist. No big deal.
+    }
   });
 </script>
