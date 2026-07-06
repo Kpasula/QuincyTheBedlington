@@ -25,13 +25,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
 
-      # Node 22.22.2 bundles npm 10.9.7, which crashes on Linux with
-      # "Exit handler never called!" while installing sharp's platform-specific
-      # optional deps. npm 11 fixes this.
-      - name: Update npm
-        run: npm install -g npm@11.18.0
+      # The npm 10.9.7 bundled in the Node 22.22.2 runner toolcache is broken
+      # (its @npmcli/arborist is missing the 'promise-retry' module), which makes
+      # `npm ci` crash. Corepack fetches a clean npm 11 independent of it.
+      - name: Activate clean npm via Corepack
+        run: |
+          corepack enable
+          corepack prepare npm@11.18.0 --activate
+          npm -v
 
       - name: Install dependencies
         run: npm ci
