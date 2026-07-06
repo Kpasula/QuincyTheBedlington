@@ -14,7 +14,7 @@ a shrug.
 <div class="quincy-note">
   <span class="quincy-note__label">Quincy's real record</span>
   <p style="margin:0.4rem 0 0">
-    Quincy has the classic gray/silver, curly, wool-like Bedlington coat. Before he
+    Quincy has the classic blue, curly, wool-like Bedlington coat. Before he
     came home he had a puppy tidy — shorter body, fuller legs, head shape starting,
     ears cleaned up. His first haircut after pickup was discussed around mid-May 2026.
     He was noticeably sleepy and deeply asleep after a grooming appointment.

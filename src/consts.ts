@@ -11,7 +11,7 @@ export const SITE = {
   tagline: 'The goodest boy on the internet',
   /** Short description for meta + social cards. */
   description:
-    'Meet Quincy, a silver Bedlington terrier who looks like a little lamb and runs the whole house. Photos, his adventures, his favorite snacks, and a game or two while you are here.',
+    'Meet Quincy, a blue Bedlington terrier who looks like a little lamb and runs the whole house. Photos, his adventures, his favorite snacks, and a game or two while you are here.',
   locale: 'en-US',
   /** Instagram. Swap the handle if it ever changes. */
   instagram: 'https://www.instagram.com/quincythebedlington',
