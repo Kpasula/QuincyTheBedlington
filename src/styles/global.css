@@ -209,11 +209,15 @@ img { max-width: 100%; height: auto; }
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.3;
   border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
 }
 .btn--primary { background: var(--color-accent-dark); color: #fff; }
 .btn--primary:hover { background: var(--color-accent); }
-.btn--ghost { border-color: var(--color-line); color: var(--color-ink); }
+.btn--ghost { border-color: var(--color-line); color: var(--color-ink); background: transparent; }
 .btn--ghost:hover { border-color: var(--color-accent); }
 
 .section-block { padding: 2.5rem 0; }
