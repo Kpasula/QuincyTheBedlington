@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SearchAction',
+    target: `${SITE.origin}/search?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+];
+---
+<BaseLayout
+  title="Search"
+  description="Search the Bedlington Terrier knowledge base. Typo-tolerant — it still finds the right answer if you misspell a word."
+  schema={schema}
+>
+  <div class="container">
+    <div class="article-head">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> / <span>Search</span>
+      </nav>
+      <h1>Search</h1>
+      <p class="hero__lede">
+        Ask a real question — "how often to groom", "copper toxicosis", "puppy feeding". Spelling
+        doesn't have to be perfect.
+      </p>
+    </div>
+
+    <div id="search"></div>
+
+    <p class="prose" id="search-fallback" hidden>
+      Search runs on the built site. If you're viewing this with <code>astro dev</code>, run
+      <code>npm run build &amp;&amp; npm run preview</code> to try it.
+    </p>
+  </div>
+
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <script is:inline>
+    // Pagefind is generated into /pagefind during the production build
+    // (see the `postbuild` script). It won't exist under `astro dev`, and the
+    // import is intentionally left for the browser to resolve at runtime.
+    (async function initSearch() {
+      var fallback = document.getElementById('search-fallback');
+      try {
+        var mod = await import(/* @vite-ignore */ '/pagefind/pagefind-ui.js');
+        new mod.PagefindUI({
+          element: '#search',
+          showSubResults: true,
+          showImages: false,
+          resetStyles: false,
+        });
+      } catch (e) {
+        if (fallback) fallback.hidden = false;
+      }
+    })();
+  </script>
+</BaseLayout>

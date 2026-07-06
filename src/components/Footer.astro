@@ -1,0 +1,32 @@
+---
+import { SECTIONS, SITE } from '../consts';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__col">
+      <p class="site-footer__brand">Quincy the Bedlington</p>
+      <p class="site-footer__note">{SITE.tagline}. Written from living with one real dog.</p>
+      <p class="site-footer__note">
+        Follow along on Instagram:
+        <a href={SITE.instagram} rel="me">{SITE.instagramHandle}</a>
+      </p>
+    </div>
+
+    <nav class="site-footer__col" aria-label="Sections">
+      <p class="site-footer__heading">Sections</p>
+      <ul class="site-footer__links">
+        {SECTIONS.map((s) => (
+          <li><a href={`/${s.slug}`}>{s.title}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="site-footer__legal">
+    <p>
+      &copy; {year} Quincy the Bedlington. General care information is not veterinary advice —
+      always check with your own vet for your dog.
+    </p>
+  </div>
+</footer>

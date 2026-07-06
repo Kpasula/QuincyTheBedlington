@@ -1,0 +1,27 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# pagefind (generated into dist during build)
+**/pagefind/
+
+# env & secrets — never commit these
+.env
+.env.*
+.dev.vars
+*.local
+
+# cloudflare / wrangler
+.wrangler/
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*

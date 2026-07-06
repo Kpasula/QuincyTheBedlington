@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SECTIONS, SITE, getSection } from '../consts';
+
+const published = (await getCollection('articles', ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true,
+)).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+
+const latest = published.slice(0, 6);
+
+// Homepage identifies the site as a reference resource for the breed.
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${SITE.name} — ${SITE.tagline}`,
+    about: { '@type': 'Thing', name: 'Bedlington Terrier' },
+    url: SITE.origin,
+  },
+];
+---
+<BaseLayout title={SITE.name} description={SITE.description} schema={schema}>
+  <section class="hero">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">The Bedlington Terrier knowledge base</p>
+      <h1 class="hero__title">Everything about Bedlington Terriers, in one place.</h1>
+      <p class="hero__lede">
+        Most of what you can find online about this breed is thin, repeated, and spread across a
+        few hard-to-find blog posts. This is the fix: real answers to real questions, backed by
+        living with one silver Bedlington named Quincy.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/breed-guide">Start with the breed guide</a>
+        <a class="btn btn--ghost" href="/search">Search a question</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section-block">
+      <div class="section-block__head">
+        <h2>Browse by topic</h2>
+      </div>
+      <div class="card-grid">
+        {SECTIONS.map((s) => (
+          <a class="card" href={`/${s.slug}`}>
+            <h3 class="card__title">{s.title}</h3>
+            <p class="card__desc">{s.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {latest.length > 0 && (
+      <section class="section-block">
+        <div class="section-block__head">
+          <h2>Latest</h2>
+          <a href="/breed-guide">All topics →</a>
+        </div>
+        <div class="card-grid">
+          {latest.map((a) => {
+            const slug = a.id.split('/').pop();
+            const sec = getSection(a.data.section);
+            return (
+              <a class="card" href={`/${a.data.section}/${slug}`}>
+                <span class="badge">{sec?.title ?? a.data.section}</span>
+                <h3 class="card__title" style="margin-top:0.5rem">{a.data.title}</h3>
+                <p class="card__desc">{a.data.description}</p>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <section class="section-block">
+      <div class="prose">
+        <h2>Why this site exists</h2>
+        <p>
+          Quincy is a male Bedlington Terrier, born January 13, 2026, from Northstar Bedlingtons.
+          He is the real-world example on every page here — the grooming, the food that worked and
+          the food that didn't, the vet questions, the puppy phases. Nothing on this site is made
+          up: if a fact isn't confirmed yet, it's marked as unconfirmed rather than guessed.
+        </p>
+        <p>
+          Follow Quincy day to day on Instagram at
+          <a href={SITE.instagram} rel="me">{SITE.instagramHandle}</a>.
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

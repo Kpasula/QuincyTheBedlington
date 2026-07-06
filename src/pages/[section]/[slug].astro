@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { SITE, getSection } from '../../consts';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  );
+  return articles.map((article) => ({
+    params: { section: article.data.section, slug: article.id.split('/').pop() },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const section = getSection(article.data.section)!;
+const slug = article.id.split('/').pop();
+const url = `${SITE.origin}/${article.data.section}/${slug}`;
+
+const dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' });
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.data.title,
+    description: article.data.description,
+    mainEntityOfPage: url,
+    url,
+    datePublished: article.data.publishDate.toISOString(),
+    dateModified: (article.data.updatedDate ?? article.data.publishDate).toISOString(),
+    author: { '@type': 'Organization', name: SITE.name, url: SITE.origin },
+    publisher: { '@id': `${SITE.origin}/#organization` },
+    about: { '@type': 'Thing', name: 'Bedlington Terrier' },
+    isAccessibleForFree: true,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.origin },
+      { '@type': 'ListItem', position: 2, name: section.title, item: `${SITE.origin}/${section.slug}` },
+      { '@type': 'ListItem', position: 3, name: article.data.title, item: url },
+    ],
+  },
+];
+---
+<BaseLayout
+  title={article.data.title}
+  description={article.data.description}
+  type="article"
+  publishDate={article.data.publishDate}
+  updatedDate={article.data.updatedDate}
+  schema={schema}
+>
+  <div class="container">
+    <article data-pagefind-body>
+      <header class="article-head">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a> / <a href={`/${section.slug}`}>{section.title}</a> / <span>{article.data.title}</span>
+        </nav>
+        <span data-pagefind-filter="section" style="display:none">{section.title}</span>
+        <h1>{article.data.title}</h1>
+        <p class="article-meta">
+          {article.data.updatedDate
+            ? `Updated ${dateFmt.format(article.data.updatedDate)}`
+            : `Published ${dateFmt.format(article.data.publishDate)}`}
+        </p>
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {article.data.sources.length > 0 && (
+        <section class="article-sources prose">
+          <h2>Sources & further reading</h2>
+          <ul>
+            {article.data.sources.map((s) => (
+              <li><a href={s.url} rel="noopener nofollow" target="_blank">{s.title}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </article>
+  </div>
+</BaseLayout>

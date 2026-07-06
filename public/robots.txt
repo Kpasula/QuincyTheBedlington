@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://quincythebedlington.com/sitemap-index.xml

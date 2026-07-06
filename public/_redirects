@@ -1,0 +1,9 @@
+# Cloudflare Pages redirects.
+# https://developers.cloudflare.com/pages/configuration/redirects/
+#
+# THE www FIX: send every www.* request to the canonical apex, preserving path.
+# This makes typing www.quincythebedlington.com land on the real site.
+https://www.quincythebedlington.com/* https://quincythebedlington.com/:splat 301
+
+# Force HTTPS on the apex (Cloudflare usually also handles this via Always Use HTTPS).
+http://quincythebedlington.com/* https://quincythebedlington.com/:splat 301
