@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-import { SECTIONS, SITE } from '../../consts';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { SECTIONS, SITE } from "../../consts";
 
 export function getStaticPaths() {
   return SECTIONS.map((section) => ({
@@ -12,29 +12,44 @@ export function getStaticPaths() {
 
 const { section } = Astro.props;
 
-const articles = (await getCollection('articles', ({ data }) =>
-  (import.meta.env.PROD ? !data.draft : true) && data.section === section.slug,
-)).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const articles = (
+  await getCollection(
+    "articles",
+    ({ data }) =>
+      (import.meta.env.PROD ? !data.draft : true) &&
+      data.section === section.slug,
+  )
+).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
 const schema = [
   {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
     name: `${section.title} — ${SITE.name}`,
     description: section.description,
     url: `${SITE.origin}/${section.slug}`,
   },
   {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.origin },
-      { '@type': 'ListItem', position: 2, name: section.title, item: `${SITE.origin}/${section.slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: section.title,
+        item: `${SITE.origin}/${section.slug}`,
+      },
     ],
   },
 ];
 ---
-<BaseLayout title={section.title} description={section.description} schema={schema}>
+
+<BaseLayout
+  title={section.title}
+  description={section.description}
+  schema={schema}
+>
   <div class="container">
     <div class="article-head">
       <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -44,24 +59,30 @@ const schema = [
       <p class="hero__lede">{section.description}</p>
     </div>
 
-    {articles.length === 0 ? (
-      <p class="prose">
-        Articles for this section are being written. In the meantime, try the
-        <a href="/search">search</a> or browse another topic.
-      </p>
-    ) : (
-      <div class="card-grid">
-        {articles.map((a) => {
-          const slug = a.id.split('/').pop();
-          return (
-            <a class="card" href={`/${section.slug}/${slug}`}>
-              {a.data.quincyFeatured && <span class="badge">Quincy example</span>}
-              <h2 class="card__title" style="margin-top:0.5rem">{a.data.title}</h2>
-              <p class="card__desc">{a.data.description}</p>
-            </a>
-          );
-        })}
-      </div>
-    )}
+    {
+      articles.length === 0 ? (
+        <p class="prose">
+          Articles for this section are being written. In the meantime, try the
+          <a href="/search">search</a> or browse another topic.
+        </p>
+      ) : (
+        <div class="card-grid">
+          {articles.map((a) => {
+            const slug = a.id.split("/").pop();
+            return (
+              <a class="card" href={`/${section.slug}/${slug}`}>
+                {a.data.quincyFeatured && (
+                  <span class="badge">Quincy example</span>
+                )}
+                <h2 class="card__title" style="margin-top:0.5rem">
+                  {a.data.title}
+                </h2>
+                <p class="card__desc">{a.data.description}</p>
+              </a>
+            );
+          })}
+        </div>
+      )
+    }
   </div>
 </BaseLayout>
