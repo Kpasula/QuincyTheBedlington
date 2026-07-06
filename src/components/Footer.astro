@@ -1,17 +1,42 @@
 ---
-import { SECTIONS, SITE } from '../consts';
+import { SECTIONS, SITE } from "../consts";
 const year = new Date().getFullYear();
 ---
+
 <footer class="site-footer">
   <div class="site-footer__inner">
     <div class="site-footer__col">
       <p class="site-footer__brand">Quincy the Bedlington 🐑</p>
-      <p class="site-footer__note">{SITE.tagline}. This whole place is just for him.</p>
-      <a class="site-footer__social" href={SITE.instagram} rel="me" aria-label={`Quincy on Instagram, ${SITE.instagramHandle}`}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="currentColor" stroke-width="1.8" />
-          <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8" />
-          <circle cx="17.3" cy="6.7" r="1.2" fill="currentColor" />
+      <p class="site-footer__note">
+        {SITE.tagline}. This whole place is just for him.
+      </p>
+      <a
+        class="site-footer__social"
+        href={SITE.instagram}
+        rel="me"
+        aria-label={`Quincy on Instagram, ${SITE.instagramHandle}`}
+      >
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="2"
+            y="2"
+            width="20"
+            height="20"
+            rx="5.5"
+            stroke="currentColor"
+            stroke-width="1.8"></rect>
+          <circle
+            cx="12"
+            cy="12"
+            r="4.2"
+            stroke="currentColor"
+            stroke-width="1.8"></circle>
+          <circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"></circle>
         </svg>
         <span>{SITE.instagramHandle}</span>
       </a>
@@ -20,14 +45,21 @@ const year = new Date().getFullYear();
     <nav class="site-footer__col" aria-label="Sections">
       <p class="site-footer__heading">His world</p>
       <ul class="site-footer__links">
-        {SECTIONS.map((s) => (
-          <li><a href={`/${s.slug}`}>{s.title}</a></li>
-        ))}
+        {
+          SECTIONS.map((s) => (
+            <li>
+              <a href={`/${s.slug}`}>{s.title}</a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
   </div>
 
   <div class="site-footer__legal">
-    <p>&copy; {year} Quincy the Bedlington. Made with a lot of treats and belly rubs. All rights reserved.</p>
+    <p>
+      &copy; {year} Quincy the Bedlington. Made with a lot of treats and belly rubs.
+      All rights reserved.
+    </p>
   </div>
 </footer>

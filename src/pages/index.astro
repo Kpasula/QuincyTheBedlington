@@ -1,37 +1,47 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-import { SECTIONS, SITE, getSection } from '../consts';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { SECTIONS, SITE, getSection } from "../consts";
 
-const published = (await getCollection('articles', ({ data }) =>
-  import.meta.env.PROD ? !data.draft : true,
-)).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const published = (
+  await getCollection("articles", ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  )
+).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
 const latest = published.slice(0, 6);
 
 // Six placeholder gallery tiles. The owner drops real photos in later.
-const galleryTiles = ['🐾', '📸', '🦴', '🐕', '💙', '⭐'];
+const galleryTiles = ["🐾", "📸", "🦴", "🐕", "💙", "⭐"];
 
 const schema = [
   {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
+    "@context": "https://schema.org",
+    "@type": "WebSite",
     name: SITE.name,
     url: SITE.origin,
   },
 ];
 ---
-<BaseLayout title={`${SITE.name} - ${SITE.tagline}`} description={SITE.description} schema={schema}>
+
+<BaseLayout
+  title={`${SITE.name} - ${SITE.tagline}`}
+  description={SITE.description}
+  schema={schema}
+>
   <section class="hero">
     <div class="hero__inner">
       <div class="hero__grid">
         <div>
           <p class="hero__eyebrow">Warning: extreme cuteness ahead</p>
-          <h1 class="hero__title">Meet Quincy. <span class="wave">👋</span> Kind of a big deal.</h1>
+          <h1 class="hero__title">
+            Meet Quincy. <span class="wave">👋</span> Kind of a big deal.
+          </h1>
           <p class="hero__lede">
-            He is a blue Bedlington terrier who looks like a baby lamb, thinks he is a lion, and
-            runs this entire house like he pays the bills. This is his corner of the internet. Stay
-            a while, meet the goodest boy, and maybe play a quick game.
+            He is a blue Bedlington terrier who looks like a baby lamb, thinks
+            he is a lion, and runs this entire house like he pays the bills.
+            This is his corner of the internet. Stay a while, meet the goodest
+            boy, and maybe play a quick game.
           </p>
           <div class="hero__actions">
             <a class="btn btn--primary" href="#gallery">See his photos</a>
@@ -44,16 +54,30 @@ const schema = [
           <div class="photo-placeholder">
             <span class="photo-placeholder__paw">🐑</span>
             <strong>Quincy's photo goes here</strong>
-            <span class="photo-placeholder__hint">save your favorite pic as /photos/hero.jpg</span>
+            <span class="photo-placeholder__hint"
+              >save your favorite pic as /photos/hero.jpg</span
+            >
           </div>
         </div>
       </div>
 
       <div class="stats">
-        <div class="stat"><div class="stat__num">100%</div><div class="stat__label">good boy</div></div>
-        <div class="stat"><div class="stat__num">∞</div><div class="stat__label">treats owed</div></div>
-        <div class="stat"><div class="stat__num">0</div><div class="stat__label">bad days</div></div>
-        <div class="stat"><div class="stat__num">1</div><div class="stat__label">of a kind</div></div>
+        <div class="stat">
+          <div class="stat__num">100%</div><div class="stat__label">
+            good boy
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">∞</div><div class="stat__label">
+            treats owed
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">0</div><div class="stat__label">bad days</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">1</div><div class="stat__label">of a kind</div>
+        </div>
       </div>
     </div>
   </section>
@@ -65,13 +89,22 @@ const schema = [
         <h2>His photo wall</h2>
         <a href={SITE.instagram} rel="me">More on Instagram →</a>
       </div>
-      <p class="card__desc">Placeholders for now. Swap them for real Quincy pics whenever you want.</p>
+      <p class="card__desc">
+        Placeholders for now. Swap them for real Quincy pics whenever you want.
+      </p>
       <div class="gallery">
-        {galleryTiles.map((emoji) => (
-          <a class="gallery__tile" href={SITE.instagram} rel="me" aria-label="Quincy photo, view on Instagram">
-            <span aria-hidden="true">{emoji}</span>
-          </a>
-        ))}
+        {
+          galleryTiles.map((emoji) => (
+            <a
+              class="gallery__tile"
+              href={SITE.instagram}
+              rel="me"
+              aria-label="Quincy photo, view on Instagram"
+            >
+              <span aria-hidden="true">{emoji}</span>
+            </a>
+          ))
+        }
       </div>
     </section>
 
@@ -80,22 +113,42 @@ const schema = [
       <div class="section-block__head">
         <h2>Catch Quincy</h2>
       </div>
-      <p class="card__desc">He never sits still. Tap him as many times as you can before the clock runs out.</p>
+      <p class="card__desc">
+        He never sits still. Tap him as many times as you can before the clock
+        runs out.
+      </p>
       <div class="game" data-game>
-        <div class="game__difficulty" role="group" aria-label="Choose difficulty">
+        <div
+          class="game__difficulty"
+          role="group"
+          aria-label="Choose difficulty"
+        >
           <span class="game__difficulty-label">Difficulty:</span>
-          <button class="game__level" type="button" data-level="easy">Easy</button>
-          <button class="game__level is-active" type="button" data-level="medium" aria-pressed="true">Medium</button>
-          <button class="game__level" type="button" data-level="hard">Hard</button>
+          <button class="game__level" type="button" data-level="easy"
+            >Easy</button
+          >
+          <button
+            class="game__level is-active"
+            type="button"
+            data-level="medium"
+            aria-pressed="true">Medium</button
+          >
+          <button class="game__level" type="button" data-level="hard"
+            >Hard</button
+          >
         </div>
         <div class="game__scorebar">
           <span class="game__stat">Score: <b data-score>0</b></span>
           <span class="game__stat">Time: <b data-time>15</b>s</span>
           <span class="game__stat">Best: <b data-best>0</b></span>
-          <button class="btn btn--primary" type="button" data-start>Start</button>
+          <button class="btn btn--primary" type="button" data-start
+            >Start</button
+          >
         </div>
         <div class="game__board" data-board>
-          <div class="game__hint" data-hint>Pick a difficulty, hit Start, and go catch the little lamb.</div>
+          <div class="game__hint" data-hint>
+            Pick a difficulty, hit Start, and go catch the little lamb.
+          </div>
         </div>
       </div>
     </section>
@@ -106,54 +159,67 @@ const schema = [
         <h2>His whole world</h2>
       </div>
       <div class="card-grid">
-        {SECTIONS.map((s) => (
-          <a class="card" href={`/${s.slug}`}>
-            <h3 class="card__title">{s.emoji} {s.title}</h3>
-            <p class="card__desc">{s.description}</p>
-          </a>
-        ))}
+        {
+          SECTIONS.map((s) => (
+            <a class="card" href={`/${s.slug}`}>
+              <h3 class="card__title">
+                {s.emoji} {s.title}
+              </h3>
+              <p class="card__desc">{s.description}</p>
+            </a>
+          ))
+        }
       </div>
     </section>
 
-    {latest.length > 0 && (
-      <section class="section-block">
-        <div class="section-block__head">
-          <h2>Fresh off his desk</h2>
-          <a href="/breed-guide">See everything →</a>
-        </div>
-        <div class="card-grid">
-          {latest.map((a) => {
-            const slug = a.id.split('/').pop();
-            const sec = getSection(a.data.section);
-            return (
-              <a class="card" href={`/${a.data.section}/${slug}`}>
-                <span class="badge">{sec?.emoji} {sec?.title ?? a.data.section}</span>
-                <h3 class="card__title" style="margin-top:0.5rem">{a.data.title}</h3>
-                <p class="card__desc">{a.data.description}</p>
-              </a>
-            );
-          })}
-        </div>
-      </section>
-    )}
+    {
+      latest.length > 0 && (
+        <section class="section-block">
+          <div class="section-block__head">
+            <h2>Fresh off his desk</h2>
+            <a href="/breed-guide">See everything →</a>
+          </div>
+          <div class="card-grid">
+            {latest.map((a) => {
+              const slug = a.id.split("/").pop();
+              const sec = getSection(a.data.section);
+              return (
+                <a class="card" href={`/${a.data.section}/${slug}`}>
+                  <span class="badge">
+                    {sec?.emoji} {sec?.title ?? a.data.section}
+                  </span>
+                  <h3 class="card__title" style="margin-top:0.5rem">
+                    {a.data.title}
+                  </h3>
+                  <p class="card__desc">{a.data.description}</p>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )
+    }
 
     <!-- Bio ----------------------------------------------------------- -->
     <section class="section-block">
       <div class="prose">
         <h2>The little guy</h2>
         <p>
-          Quincy showed up on January 13, 2026, a tiny gray fluffball from Northstar Bedlingtons,
-          and honestly nothing has been the same since. He is equal parts couch potato and total
-          menace. One minute he is curled up like a cloud, the next he is sprinting laps around the
+          Quincy showed up on January 13, 2026, a tiny gray fluffball from
+          Northstar Bedlingtons, and honestly nothing has been the same since.
+          He is equal parts couch potato and total menace. One minute he is
+          curled up like a cloud, the next he is sprinting laps around the
           living room for absolutely no reason.
         </p>
         <p>
-          This site is just me showing him off, plus everything I am figuring out along the way. The
-          good, the messy, the "why is he like this." All Quincy, all the time.
+          This site is just me showing him off, plus everything I am figuring
+          out along the way. The good, the messy, the "why is he like this." All
+          Quincy, all the time.
         </p>
         <p>
           Come say hi on Instagram at
-          <a href={SITE.instagram} rel="me">{SITE.instagramHandle}</a>. He loves the attention.
+          <a href={SITE.instagram} rel="me">{SITE.instagramHandle}</a>. He loves
+          the attention.
         </p>
       </div>
     </section>
@@ -161,36 +227,50 @@ const schema = [
     <!-- Share --------------------------------------------------------- -->
     <section class="share">
       <h2>Spread the Quincy word</h2>
-      <p class="card__desc">Know someone who needs more cute in their day? Send them here.</p>
+      <p class="card__desc">
+        Know someone who needs more cute in their day? Send them here.
+      </p>
       <div class="share__buttons">
-        <a class="btn btn--primary" href={`https://wa.me/?text=${encodeURIComponent('Meet Quincy, the goodest boy on the internet: ' + SITE.origin)}`} target="_blank" rel="noopener">WhatsApp</a>
-        <a class="btn btn--ghost" href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Meet Quincy, the goodest boy on the internet')}&url=${encodeURIComponent(SITE.origin)}`} target="_blank" rel="noopener">Post it</a>
-        <button class="btn btn--ghost" type="button" data-copy-link>Copy link</button>
+        <a
+          class="btn btn--primary"
+          href={`https://wa.me/?text=${encodeURIComponent("Meet Quincy, the goodest boy on the internet: " + SITE.origin)}`}
+          target="_blank"
+          rel="noopener">WhatsApp</a
+        >
+        <a
+          class="btn btn--ghost"
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Meet Quincy, the goodest boy on the internet")}&url=${encodeURIComponent(SITE.origin)}`}
+          target="_blank"
+          rel="noopener">Post it</a
+        >
+        <button class="btn btn--ghost" type="button" data-copy-link
+          >Copy link</button
+        >
       </div>
     </section>
   </div>
 
   <script define:vars={{ origin: SITE.origin }}>
     // ----- Catch Quincy game -----
-    const root = document.querySelector('[data-game]');
+    const root = document.querySelector("[data-game]");
     if (root) {
-      const board = root.querySelector('[data-board]');
-      const hint = root.querySelector('[data-hint]');
-      const scoreEl = root.querySelector('[data-score]');
-      const timeEl = root.querySelector('[data-time]');
-      const bestEl = root.querySelector('[data-best]');
-      const startBtn = root.querySelector('[data-start]');
-      const levelBtns = Array.from(root.querySelectorAll('[data-level]'));
-      const emojis = ['🐑', '🐕', '🐶'];
+      const board = root.querySelector("[data-board]");
+      const hint = root.querySelector("[data-hint]");
+      const scoreEl = root.querySelector("[data-score]");
+      const timeEl = root.querySelector("[data-time]");
+      const bestEl = root.querySelector("[data-best]");
+      const startBtn = root.querySelector("[data-start]");
+      const levelBtns = Array.from(root.querySelectorAll("[data-level]"));
+      const emojis = ["🐑", "🐕", "🐶"];
 
       // Each level tunes the clock, how often he darts away, and his size.
       const LEVELS = {
-        easy:   { time: 20, move: 1200, size: '3.2rem', label: 'Easy' },
-        medium: { time: 15, move: 900,  size: '2.6rem', label: 'Medium' },
-        hard:   { time: 10, move: 550,  size: '2rem',   label: 'Hard' },
+        easy: { time: 20, move: 1200, size: "3.2rem", label: "Easy" },
+        medium: { time: 15, move: 900, size: "2.6rem", label: "Medium" },
+        hard: { time: 10, move: 550, size: "2rem", label: "Hard" },
       };
 
-      let level = 'medium';
+      let level = "medium";
       let score = 0;
       let timeLeft = LEVELS[level].time;
       let ticker = null;
@@ -198,11 +278,19 @@ const schema = [
       let target = null;
       let running = false;
 
-      function bestKey(lvl) { return 'qtb-game-best-' + lvl; }
-      function readBest(lvl) {
-        try { return Number(localStorage.getItem(bestKey(lvl)) || '0') || 0; } catch (e) { return 0; }
+      function bestKey(lvl) {
+        return "qtb-game-best-" + lvl;
       }
-      function showBest() { bestEl.textContent = String(readBest(level)); }
+      function readBest(lvl) {
+        try {
+          return Number(localStorage.getItem(bestKey(lvl)) || "0") || 0;
+        } catch (e) {
+          return 0;
+        }
+      }
+      function showBest() {
+        bestEl.textContent = String(readBest(level));
+      }
 
       function setLevel(lvl) {
         if (running || !LEVELS[lvl]) return;
@@ -210,9 +298,9 @@ const schema = [
         timeLeft = LEVELS[level].time;
         timeEl.textContent = String(timeLeft);
         levelBtns.forEach((b) => {
-          const on = b.getAttribute('data-level') === lvl;
-          b.classList.toggle('is-active', on);
-          b.setAttribute('aria-pressed', String(on));
+          const on = b.getAttribute("data-level") === lvl;
+          b.classList.toggle("is-active", on);
+          b.setAttribute("aria-pressed", String(on));
         });
         showBest();
       }
@@ -222,28 +310,33 @@ const schema = [
         const pad = 40;
         const x = pad + Math.random() * (board.clientWidth - pad * 2);
         const y = pad + Math.random() * (board.clientHeight - pad * 2);
-        target.style.left = x + 'px';
-        target.style.top = y + 'px';
+        target.style.left = x + "px";
+        target.style.top = y + "px";
         target.textContent = emojis[Math.floor(Math.random() * emojis.length)];
       }
 
       function stop() {
         clearInterval(ticker);
         clearInterval(mover);
-        if (target) { target.remove(); target = null; }
+        if (target) {
+          target.remove();
+          target = null;
+        }
         running = false;
         levelBtns.forEach((b) => (b.disabled = false));
         const best = readBest(level);
         let msg = `Time! You caught him ${score} times on ${LEVELS[level].label}.`;
         if (score > best) {
-          try { localStorage.setItem(bestKey(level), String(score)); } catch (e) {}
+          try {
+            localStorage.setItem(bestKey(level), String(score));
+          } catch (e) {}
           msg = `New best on ${LEVELS[level].label}: ${score}! 🎉`;
         }
         showBest();
-        hint.textContent = msg + ' Tap Start to go again.';
-        hint.style.display = 'grid';
+        hint.textContent = msg + " Tap Start to go again.";
+        hint.style.display = "grid";
         startBtn.disabled = false;
-        startBtn.textContent = 'Play again';
+        startBtn.textContent = "Play again";
       }
 
       function start() {
@@ -251,18 +344,18 @@ const schema = [
         running = true;
         score = 0;
         timeLeft = cfg.time;
-        scoreEl.textContent = '0';
+        scoreEl.textContent = "0";
         timeEl.textContent = String(timeLeft);
-        hint.style.display = 'none';
+        hint.style.display = "none";
         startBtn.disabled = true;
         levelBtns.forEach((b) => (b.disabled = true));
 
-        target = document.createElement('button');
-        target.type = 'button';
-        target.className = 'game__target';
+        target = document.createElement("button");
+        target.type = "button";
+        target.className = "game__target";
         target.style.fontSize = cfg.size;
-        target.setAttribute('aria-label', 'Catch Quincy');
-        target.addEventListener('click', () => {
+        target.setAttribute("aria-label", "Catch Quincy");
+        target.addEventListener("click", () => {
           score += 1;
           scoreEl.textContent = String(score);
           place();
@@ -278,19 +371,25 @@ const schema = [
         }, 1000);
       }
 
-      levelBtns.forEach((b) => b.addEventListener('click', () => setLevel(b.getAttribute('data-level'))));
-      startBtn.addEventListener('click', start);
+      levelBtns.forEach((b) =>
+        b.addEventListener("click", () =>
+          setLevel(b.getAttribute("data-level")),
+        ),
+      );
+      startBtn.addEventListener("click", start);
       showBest();
     }
 
     // ----- Copy link -----
-    const copyBtn = document.querySelector('[data-copy-link]');
-    copyBtn?.addEventListener('click', async () => {
+    const copyBtn = document.querySelector("[data-copy-link]");
+    copyBtn?.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(origin);
         const original = copyBtn.textContent;
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => { copyBtn.textContent = original; }, 1500);
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyBtn.textContent = original;
+        }, 1500);
       } catch (e) {
         copyBtn.textContent = origin;
       }
