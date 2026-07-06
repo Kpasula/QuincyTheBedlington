@@ -541,6 +541,74 @@ img { max-width: 100%; height: auto; }
 }
 
 /* ------------------------------------------------------------------ *
+ * Memory match game
+ * ------------------------------------------------------------------ */
+.memory {
+  margin-top: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.memory__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.memory__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  position: relative;
+  min-height: 8rem;
+}
+.memory__grid .game__hint {
+  position: static;
+  grid-column: 1 / -1;
+  padding: 2rem 1rem;
+}
+.memory__card {
+  aspect-ratio: 3 / 4;
+  border: none;
+  padding: 0;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  perspective: 600px;
+}
+.memory__face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: clamp(1.4rem, 6vw, 2.2rem);
+  backface-visibility: hidden;
+  transition: transform 0.3s ease;
+  border: 1px solid var(--color-line);
+}
+.memory__face--back {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 20%, transparent), var(--color-silver-soft));
+  color: var(--color-accent-dark);
+}
+.memory__face--front {
+  background: var(--color-silver-soft);
+  transform: rotateY(180deg);
+}
+.memory__card.is-flipped .memory__face--back { transform: rotateY(180deg); }
+.memory__card.is-flipped .memory__face--front { transform: rotateY(360deg); }
+.memory__card.is-matched { opacity: 0.55; }
+.memory__card.is-matched .memory__face--front { border-color: var(--color-accent); }
+@media (max-width: 520px) {
+  .memory__grid { gap: 0.4rem; }
+}
+
+/* ------------------------------------------------------------------ *
  * Share / tell-a-friend
  * ------------------------------------------------------------------ */
 .share {
