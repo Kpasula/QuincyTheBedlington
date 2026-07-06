@@ -153,6 +153,25 @@ const schema = [
       </div>
     </section>
 
+    <!-- Memory game --------------------------------------------------- -->
+    <section class="section-block" id="memory">
+      <div class="section-block__head">
+        <h2>Quincy's memory match</h2>
+      </div>
+      <p class="card__desc">Flip the cards two at a time and find all the matching pairs. Fewer moves is better.</p>
+      <div class="memory" data-memory>
+        <div class="memory__bar">
+          <span class="game__stat">Moves: <b data-moves>0</b></span>
+          <span class="game__stat">Pairs: <b data-pairs>0</b>/6</span>
+          <span class="game__stat">Best: <b data-mem-best>-</b></span>
+          <button class="btn btn--primary" type="button" data-mem-start>Shuffle &amp; play</button>
+        </div>
+        <div class="memory__grid" data-mem-grid>
+          <div class="game__hint">Tap "Shuffle &amp; play" to lay out the cards.</div>
+        </div>
+      </div>
+    </section>
+
     <!-- Browse his world -------------------------------------------- -->
     <section class="section-block">
       <div class="section-block__head">
@@ -378,6 +397,105 @@ const schema = [
       );
       startBtn.addEventListener("click", start);
       showBest();
+    }
+
+    // ----- Quincy's memory match -----
+    const mem = document.querySelector('[data-memory]');
+    if (mem) {
+      const grid = mem.querySelector('[data-mem-grid]');
+      const movesEl = mem.querySelector('[data-moves]');
+      const pairsEl = mem.querySelector('[data-pairs]');
+      const bestEl = mem.querySelector('[data-mem-best]');
+      const startBtn = mem.querySelector('[data-mem-start]');
+      const faces = ['🐑', '🦴', '🎾', '🐾', '🍖', '⭐'];
+
+      let flipped = [];
+      let moves = 0;
+      let pairs = 0;
+      let lock = false;
+
+      let best = null;
+      try {
+        const raw = localStorage.getItem('qtb-memory-best');
+        best = raw ? Number(raw) : null;
+      } catch (e) {}
+      bestEl.textContent = best ? String(best) : '-';
+
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function win() {
+        if (best === null || moves < best) {
+          best = moves;
+          bestEl.textContent = String(best);
+          try { localStorage.setItem('qtb-memory-best', String(best)); } catch (e) {}
+        }
+      }
+
+      function build() {
+        moves = 0;
+        pairs = 0;
+        flipped = [];
+        lock = false;
+        movesEl.textContent = '0';
+        pairsEl.textContent = '0';
+
+        const deck = shuffle([...faces, ...faces]);
+        grid.innerHTML = '';
+        deck.forEach((face) => {
+          const card = document.createElement('button');
+          card.type = 'button';
+          card.className = 'memory__card';
+          card.setAttribute('aria-label', 'Memory card, face down');
+          card.dataset.face = face;
+          card.innerHTML =
+            '<span class="memory__face memory__face--back" aria-hidden="true">🐾</span>' +
+            '<span class="memory__face memory__face--front" aria-hidden="true">' + face + '</span>';
+          card.addEventListener('click', () => flip(card));
+          grid.appendChild(card);
+        });
+      }
+
+      function flip(card) {
+        if (lock || card.classList.contains('is-flipped') || card.classList.contains('is-matched')) return;
+        card.classList.add('is-flipped');
+        card.setAttribute('aria-label', 'Memory card, ' + card.dataset.face);
+        flipped.push(card);
+        if (flipped.length < 2) return;
+
+        moves += 1;
+        movesEl.textContent = String(moves);
+        lock = true;
+        const [a, b] = flipped;
+
+        if (a.dataset.face === b.dataset.face) {
+          setTimeout(() => {
+            a.classList.add('is-matched');
+            b.classList.add('is-matched');
+            flipped = [];
+            lock = false;
+            pairs += 1;
+            pairsEl.textContent = String(pairs);
+            if (pairs === faces.length) win();
+          }, 350);
+        } else {
+          setTimeout(() => {
+            a.classList.remove('is-flipped');
+            b.classList.remove('is-flipped');
+            a.setAttribute('aria-label', 'Memory card, face down');
+            b.setAttribute('aria-label', 'Memory card, face down');
+            flipped = [];
+            lock = false;
+          }, 750);
+        }
+      }
+
+      startBtn.addEventListener('click', build);
     }
 
     // ----- Copy link -----
