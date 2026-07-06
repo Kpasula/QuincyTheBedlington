@@ -82,6 +82,12 @@ const schema = [
       </div>
       <p class="card__desc">He never sits still. Tap him as many times as you can before the clock runs out.</p>
       <div class="game" data-game>
+        <div class="game__difficulty" role="group" aria-label="Choose difficulty">
+          <span class="game__difficulty-label">Difficulty:</span>
+          <button class="game__level" type="button" data-level="easy">Easy</button>
+          <button class="game__level is-active" type="button" data-level="medium" aria-pressed="true">Medium</button>
+          <button class="game__level" type="button" data-level="hard">Hard</button>
+        </div>
         <div class="game__scorebar">
           <span class="game__stat">Score: <b data-score>0</b></span>
           <span class="game__stat">Time: <b data-time>15</b>s</span>
@@ -89,7 +95,7 @@ const schema = [
           <button class="btn btn--primary" type="button" data-start>Start</button>
         </div>
         <div class="game__board" data-board>
-          <div class="game__hint" data-hint>Hit Start and go catch the little lamb.</div>
+          <div class="game__hint" data-hint>Pick a difficulty, hit Start, and go catch the little lamb.</div>
         </div>
       </div>
     </section>
@@ -174,16 +180,42 @@ const schema = [
       const timeEl = root.querySelector('[data-time]');
       const bestEl = root.querySelector('[data-best]');
       const startBtn = root.querySelector('[data-start]');
+      const levelBtns = Array.from(root.querySelectorAll('[data-level]'));
       const emojis = ['🐑', '🐕', '🐶'];
 
+      // Each level tunes the clock, how often he darts away, and his size.
+      const LEVELS = {
+        easy:   { time: 20, move: 1200, size: '3.2rem', label: 'Easy' },
+        medium: { time: 15, move: 900,  size: '2.6rem', label: 'Medium' },
+        hard:   { time: 10, move: 550,  size: '2rem',   label: 'Hard' },
+      };
+
+      let level = 'medium';
       let score = 0;
-      let timeLeft = 15;
+      let timeLeft = LEVELS[level].time;
       let ticker = null;
       let mover = null;
       let target = null;
-      let best = 0;
-      try { best = Number(localStorage.getItem('qtb-game-best') || '0') || 0; } catch (e) {}
-      bestEl.textContent = String(best);
+      let running = false;
+
+      function bestKey(lvl) { return 'qtb-game-best-' + lvl; }
+      function readBest(lvl) {
+        try { return Number(localStorage.getItem(bestKey(lvl)) || '0') || 0; } catch (e) { return 0; }
+      }
+      function showBest() { bestEl.textContent = String(readBest(level)); }
+
+      function setLevel(lvl) {
+        if (running || !LEVELS[lvl]) return;
+        level = lvl;
+        timeLeft = LEVELS[level].time;
+        timeEl.textContent = String(timeLeft);
+        levelBtns.forEach((b) => {
+          const on = b.getAttribute('data-level') === lvl;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        showBest();
+      }
 
       function place() {
         if (!target) return;
@@ -199,28 +231,36 @@ const schema = [
         clearInterval(ticker);
         clearInterval(mover);
         if (target) { target.remove(); target = null; }
+        running = false;
+        levelBtns.forEach((b) => (b.disabled = false));
+        const best = readBest(level);
+        let msg = `Time! You caught him ${score} times on ${LEVELS[level].label}.`;
         if (score > best) {
-          best = score;
-          bestEl.textContent = String(best);
-          try { localStorage.setItem('qtb-game-best', String(best)); } catch (e) {}
+          try { localStorage.setItem(bestKey(level), String(score)); } catch (e) {}
+          msg = `New best on ${LEVELS[level].label}: ${score}! 🎉`;
         }
-        hint.textContent = `Time! You caught him ${score} times. Tap Start to try again.`;
+        showBest();
+        hint.textContent = msg + ' Tap Start to go again.';
         hint.style.display = 'grid';
         startBtn.disabled = false;
         startBtn.textContent = 'Play again';
       }
 
       function start() {
+        const cfg = LEVELS[level];
+        running = true;
         score = 0;
-        timeLeft = 15;
+        timeLeft = cfg.time;
         scoreEl.textContent = '0';
-        timeEl.textContent = '15';
+        timeEl.textContent = String(timeLeft);
         hint.style.display = 'none';
         startBtn.disabled = true;
+        levelBtns.forEach((b) => (b.disabled = true));
 
         target = document.createElement('button');
         target.type = 'button';
         target.className = 'game__target';
+        target.style.fontSize = cfg.size;
         target.setAttribute('aria-label', 'Catch Quincy');
         target.addEventListener('click', () => {
           score += 1;
@@ -230,7 +270,7 @@ const schema = [
         board.appendChild(target);
         place();
 
-        mover = setInterval(place, 900);
+        mover = setInterval(place, cfg.move);
         ticker = setInterval(() => {
           timeLeft -= 1;
           timeEl.textContent = String(timeLeft);
@@ -238,7 +278,9 @@ const schema = [
         }, 1000);
       }
 
+      levelBtns.forEach((b) => b.addEventListener('click', () => setLevel(b.getAttribute('data-level'))));
       startBtn.addEventListener('click', start);
+      showBest();
     }
 
     // ----- Copy link -----
