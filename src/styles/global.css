@@ -20,6 +20,7 @@
   --color-line: #e4e7ec;
   --color-accent: #4a6b8a;      /* slate blue */
   --color-accent-dark: #34506a;
+  --color-on-accent: #ffffff;   /* text on top of a primary (blue) button */
   --color-silver: #c8ccd2;
   --color-silver-soft: #eef0f3;
   --color-warn-bg: #fff7e6;
@@ -45,6 +46,7 @@
   --color-line: #2c343c;
   --color-accent: #8fb2d4;
   --color-accent-dark: #b9d1e8;
+  --color-on-accent: #14181d;   /* dark text: the accent is light here */
   --color-silver: #4a545f;
   --color-silver-soft: #232a31;
   --color-warn-bg: #2c2717;
@@ -61,6 +63,7 @@
     --color-line: #2c343c;
     --color-accent: #8fb2d4;
     --color-accent-dark: #b9d1e8;
+    --color-on-accent: #14181d;   /* dark text: the accent is light here */
     --color-silver: #4a545f;
     --color-silver-soft: #232a31;
     --color-warn-bg: #2c2717;
@@ -94,7 +97,7 @@ img { max-width: 100%; height: auto; }
   left: -999px;
   top: 0;
   background: var(--color-accent-dark);
-  color: #fff;
+  color: var(--color-on-accent);
   padding: 0.5rem 1rem;
   z-index: 100;
 }
@@ -215,7 +218,7 @@ img { max-width: 100%; height: auto; }
   background: transparent;
   cursor: pointer;
 }
-.btn--primary { background: var(--color-accent-dark); color: #fff; }
+.btn--primary { background: var(--color-accent-dark); color: var(--color-on-accent); }
 .btn--primary:hover { background: var(--color-accent); }
 .btn--ghost { border-color: var(--color-line); color: var(--color-ink); background: transparent; }
 .btn--ghost:hover { border-color: var(--color-accent); }
@@ -491,7 +494,7 @@ img { max-width: 100%; height: auto; }
 .game__level.is-active {
   background: var(--color-accent-dark);
   border-color: var(--color-accent-dark);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 .game__level:disabled { opacity: 0.5; cursor: not-allowed; }
 .game__scorebar {
